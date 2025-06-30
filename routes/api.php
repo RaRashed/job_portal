@@ -54,18 +54,21 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('jobs', [JobController::class, 'store']);
         Route::put('jobs/{id}', [JobController::class, 'update']);
         Route::delete('jobs/destroy/{id}', [JobController::class, 'destroy']);
+
+        Route::get('jobs/{id}/applications', [ApplicationController::class, 'jobApplications']);
     });
 });
 Route::middleware('auth:api')->group(callback: function () {
-    Route::get('candidates-list', [CandidateController::class, 'index']);
+    Route::middleware(['role:candidate'])->group(function () {
+    Route::get('candidates/list-jobs', [CandidateController::class, 'listJobs']);
+    Route::get('applications', [ApplicationController::class, 'index']); // for candidate
+    Route::post('jobs/apply/{id}', [ApplicationController::class, 'apply']);
+
+
     Route::post('candidates', [CandidateController::class, 'store']);
     Route::put('candidates/{id}', [CandidateController::class, 'update']);
     Route::delete('candidates/{id}', [CandidateController::class, 'destroy']);
 });
-Route::middleware('auth:api')->group(function () {
-    Route::get('applications', [ApplicationController::class, 'index']); // for candidate
-    Route::get('jobs/{id}/applications', [ApplicationController::class, 'jobApplications']); // for employer
-    Route::post('jobs/apply/{id}', [ApplicationController::class, 'apply']);
 });
 Route::middleware('auth:api')->group(function () {
     Route::get('skills-list', [SkillController::class, 'index']);

@@ -19,7 +19,8 @@ class CandidateController extends Controller
             $keyword = $request->input('keyword');
             $query->where(function($q) use ($keyword) {
                 $q->where('title', 'ILIKE', "%$keyword%")
-                  ->orWhere('description', 'ILIKE', "%$keyword%");
+                  ->orWhere('description', 'ILIKE', "%$keyword%")
+                  ->orWhere('salary', 'ILIKE', "%$keyword%");
             });
         }
 
