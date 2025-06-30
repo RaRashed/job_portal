@@ -1,0 +1,37 @@
+Users
+ ├── id (PK)
+ ├── name
+ ├── email
+ ├── password
+ ├── role
+ └── location
+ └──expected_salary
+
+
+Jobs
+ ├── id (PK)
+ ├── user_id (FK → Users)
+ ├── title
+ ├── description
+ ├── location
+ ├── salary
+ └── archived
+
+Applications
+ ├── id (PK)
+ ├── job_id (FK → Jobs)
+ ├── user_id (FK → Users)
+ └── status
+
+Skills
+ └── id (PK), name
+
+candidate_skill (Pivot)
+ ├── id
+ ├── user_id (FK → Users)
+ └── skill_id (FK → Skills)
+
+job_skill (Pivot)
+ ├── id
+ ├── job_id (FK → Jobs)
+ └── skill_id (FK → Skills)
