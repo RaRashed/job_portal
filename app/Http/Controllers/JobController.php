@@ -3,12 +3,18 @@
 namespace App\Http\Controllers;
 use App\Models\Job;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class JobController extends Controller
 {
     public function index()
     {
+
+    $jobs = Cache::remember('recent_jobs', now()->addMinutes(5), function () {
         return Job::with('skills')->where('user_id', auth()->id())->get();
+    });
+    return response()->json($jobs);
+
     }
 
     public function store(Request $request)

@@ -26,15 +26,20 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::post('register', [AuthController::class, 'register']);
-Route::post('login', [AuthController::class, 'login']);
+Route::post('login', [AuthController::class, 'login'])->middleware('throttle:5,1');
 Route::middleware('auth:api')->get('me', [AuthController::class, 'me']);
 Route::middleware('auth:api')->post('logout', [AuthController::class, 'logout']);
 
 
 // Candidate Skills
-Route::post('/candidates/{id}/skills', [CandidateSkillController::class, 'attachSkills']);
-Route::delete('/candidates/{id}/skills/{skillId}', [CandidateSkillController::class, 'detachSkill']);
-Route::get('/candidates/{id}/skills', [CandidateSkillController::class, 'getSkills']);
+Route::middleware(['auth:api'])->group(function () {
+Route::middleware(['role:candidate'])->group(function () {
+    Route::post('/candidates/{id}/skills', [CandidateSkillController::class, 'attachSkills']);
+    Route::delete('/candidates/{id}/skills/{skillId}', [CandidateSkillController::class, 'detachSkill']);
+    Route::get('/candidates/{id}/skills', [CandidateSkillController::class, 'getSkills']);
+});
+});
+
 
 // Job Skills
 Route::post('/jobs/{id}/skills', [JobSkillController::class, 'attachSkills']);

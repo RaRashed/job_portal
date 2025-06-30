@@ -3,12 +3,16 @@
 namespace App\Http\Controllers;
 use App\Models\Skill;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class SkillController extends Controller
 {
     public function index()
     {
-        return Skill::all();
+        return Cache::remember('skills_with_jobs', now()->addMinutes(5), function () {
+            return Skill::with('jobs')->get();
+        });
+        
     }
 
     public function store(Request $request)

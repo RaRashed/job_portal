@@ -4,12 +4,22 @@ namespace App\Http\Controllers;
 use App\Models\Application;
 use App\Models\Job;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class ApplicationController extends Controller
 {
     public function index()
     {
-        return Application::with('job')->where('user_id', auth()->id())->get();
+        $userId = auth()->id();
+
+        $applications = Cache::remember("user_{$userId}_applications", now()->addMinutes(5), function () use ($userId) {
+            return Application::with('job')
+                ->where('user_id', $userId)
+                ->get();
+        });
+    
+        return response()->json($applications);
+
     }
 
     public function apply(Request $request, $id)

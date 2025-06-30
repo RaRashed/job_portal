@@ -8,32 +8,36 @@ use Illuminate\Http\Request;
 
 class CandidateSkillController extends Controller
 {
-    public function attachSkills(Request $request, $userId)
+    public function attachSkills(Request $request, $id)
     {
-        $request->validate([
-            'skills' => 'required|array',
-            'skills.*' => 'exists:skills,id'
+        $validated = $request->validate([
+            'skills' => ['required', 'array'],
+            'skills.*' => ['exists:skills,id'],
+        ], [
+            'skills.required' => 'The skills field is required.',
+            'skills.array' => 'The skills must be an array.',
+            'skills.*.exists' => 'One or more of the skills are invalid.',
         ]);
 
-        $user = User::findOrFail($userId);
+        $user = User::findOrFail($id);
         $user->skills()->syncWithoutDetaching($request->skills); // Avoid duplicates
 
         return response()->json(['message' => 'Skills attached successfully']);
     }
 
     // Detach a skill
-    public function detachSkill($userId, $skillId)
+    public function detachSkill($id, $skillId)
     {
-        $user = User::findOrFail($userId);
+        $user = User::findOrFail($id);
         $user->skills()->detach($skillId);
 
         return response()->json(['message' => 'Skill detached successfully']);
     }
 
     // Get candidate skills
-    public function getSkills($userId)
+    public function getSkills($id)
     {
-        $user = User::with('skills')->findOrFail($userId);
+        $user = User::with('skills')->findOrFail($id);
         return response()->json($user->skills);
     }
 }
