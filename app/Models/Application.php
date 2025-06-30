@@ -13,4 +13,12 @@ class Application extends Model
         'job_id',
         // 'status', // pending, accepted, rejected
     ];
+    public function job()
+    {
+        return $this->belongsTo(Job::class);
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

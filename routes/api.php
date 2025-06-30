@@ -42,11 +42,19 @@ Route::get('/jobs/{id}/skills', [JobSkillController::class, 'getSkills']);
 
 
 
-Route::middleware('auth:api')->group(function () {
+// Route::middleware('auth:api')->group(function () {
+//     Route::get('jobs-list', [JobController::class, 'index']);
+//     Route::post('jobs', [JobController::class, 'store']);
+//     Route::put('jobs/{id}', [JobController::class, 'update']);
+//     Route::delete('jobs/{id}', [JobController::class, 'destroy']);
+// });
+Route::middleware(['auth:api'])->group(function () {
     Route::get('jobs-list', [JobController::class, 'index']);
-    Route::post('jobs', [JobController::class, 'store']);
-    Route::put('jobs/{id}', [JobController::class, 'update']);
-    Route::delete('jobs/{id}', [JobController::class, 'destroy']);
+    Route::middleware(['role:employer'])->group(function () {
+        Route::post('jobs', [JobController::class, 'store']);
+        Route::put('jobs/{id}', [JobController::class, 'update']);
+        Route::delete('jobs/destroy/{id}', [JobController::class, 'destroy']);
+    });
 });
 Route::middleware('auth:api')->group(callback: function () {
     Route::get('candidates-list', [CandidateController::class, 'index']);
@@ -57,7 +65,7 @@ Route::middleware('auth:api')->group(callback: function () {
 Route::middleware('auth:api')->group(function () {
     Route::get('applications', [ApplicationController::class, 'index']); // for candidate
     Route::get('jobs/{id}/applications', [ApplicationController::class, 'jobApplications']); // for employer
-    Route::post('jobs/{id}/apply', [ApplicationController::class, 'apply']);
+    Route::post('jobs/apply/{id}', [ApplicationController::class, 'apply']);
 });
 Route::middleware('auth:api')->group(function () {
     Route::get('skills-list', [SkillController::class, 'index']);
