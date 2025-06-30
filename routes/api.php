@@ -9,6 +9,7 @@ use App\Http\Controllers\JobSkillController;
 use App\Http\Controllers\SkillController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -77,4 +78,7 @@ Route::middleware('auth:api')->group(function () {
     Route::delete('skills/{id}', [SkillController::class, 'destroy']);
 });
 
+Route::middleware(['auth:api', 'role:admin'])->group(function () {
+    Route::get('admin/metrics', [AdminController::class, 'metrics']);
+});
 
