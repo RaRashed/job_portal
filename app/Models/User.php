@@ -33,7 +33,7 @@ class User extends Authenticatable implements JWTSubject
     }
     public function skills()
     {
-        return $this->belongsToMany(Skill::class, 'candidate_skill');
+        return $this->belongsToMany(Skill::class, 'candidate_skill', 'user_id', 'skill_id');
     }
     public function jobs()
     {
